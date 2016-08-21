@@ -1,18 +1,14 @@
 import websocket
 import time
 import _thread as thread
-import jtalk
-from mugbot_expression import get_mugbot_expression
+from mugbot import get_mugbot
 
 
 def on_message(ws, message):
-    print("### recieved message ###")
     print("rsv: {}".format(message))
 
-    exp = get_mugbot_expression
-    exp.flash_eyes()
-    jtalk.jtalk(message)
-    exp.lighten_eyes()
+    mugbot = get_mugbot
+    mugbot.hear(message)
 
 def on_error(ws, error):
     print("### error ###")
@@ -24,7 +20,7 @@ def on_close(ws):
 def on_open(ws):
     print("### open ###")
     def run(*args):
-        ws.send("こんにちは")
+        # ws.send("うーん")
         time.sleep(1)
 
         # ws.close()

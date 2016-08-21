@@ -1,10 +1,19 @@
 import tornado.ioloop
 import tornado.web
 import tornado.websocket
+import tornado.options
+import tornado.httpserver
 import subprocess
+import os
 
 
-class Messenger(tornado.websocket.WebSocketHandler):
+class IndexHandler(tornado.websocket.WebSocketHandler):
+
+    @tornado.web.asynchronous
+    def get(self, *args):
+        self.render("index.html")
+
+class SocketHandler(tornado.websocket.WebSocketHandler):
 
     clients = []
 
@@ -19,15 +28,35 @@ class Messenger(tornado.websocket.WebSocketHandler):
     def on_message(self, message):
         print('message {}'.format(message))
         for client in self.clients:
-            client.write_message("さようなら")
+            client.write_message(message)
 
     def on_close(self):
         print('close')
         if self in self.clients:
             self.clients.remove(self)
 
-application = tornado.web.Application([(r'/ws', Messenger)])
+class Application(tornado.web.Application):
+
+    def __init__(self):
+        handlers = [
+            (r'/', IndexHandler),
+            (r'/ws', SocketHandler),
+        ]
+        settings = dict(
+            cookie_secret='__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__',
+            template_path=os.path.join(os.path.dirname(__file__), 'templates'),
+            static_path=os.path.join(os.path.dirname(__file__), 'static'),
+            xsrf_cookies=True,
+        )
+        tornado.web.Application.__init__(self, handlers, **settings)
+
+
+def main():
+    tornado.options.parse_command_line()
+    http_server = tornado.httpserver.HTTPServer(Application())
+    http_server.listen(8080)
+    tornado.ioloop.IOLoop.current().start()
+
 
 if __name__ =="__main__":
-    application.listen(8080)
-    tornado.ioloop.IOLoop.current().start()
+    main()
