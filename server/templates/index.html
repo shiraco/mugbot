@@ -53,6 +53,12 @@ $(function(){
    };
 // 192.168.42.1はRaspberry PiのIPアドレスを記入
 
+
+   $("#listen").click(function(e){
+             ws.send("@a")
+   });
+
+
 //////////////////////音声合成///////////////////////////////
    $("#input").keypress(function(e){
        if(e.keyCode ==13){
@@ -244,10 +250,17 @@ $(function(){
        <h1>Mugbot System 1.1</h1>
    </div>
    <div data-role="content">
+
+       <div class="ui-block-a">
+         <input type="button" id= "listen" value="話を聞く" />
+       </div>
+
+
        <div data-role="fieldcontain">
           <label for="textinput">話す :</label>
           <input type="text" name="textinput" id="input" />
        </div>
+
        <!-- スライダーによる目、首、目の明るさ制御 -->
        <div data-role="fieldcontain">
           <label for="slider0">上下 :</label>

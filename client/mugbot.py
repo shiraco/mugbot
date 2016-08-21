@@ -1,4 +1,5 @@
 import jtalk
+import julius
 from datetime import datetime
 from mugbot_expression import get_mugbot_expression
 
@@ -28,13 +29,21 @@ class Mugbot(object):
             if brightness.isdigit():
                 self.exp.brighten_eyes(brightness)
 
+        elif message[0:2]=="@a":
+            self.__listen()
+
         elif message[0:1]=="@":
             action = message[1:]
             if action.isalnum():
                 self.exp.brighten_eyes(action)
 
         else:
-             self.__say(message)
+            self.__say(message)
+
+    def __listen(self):
+        self.__say('どうしました？')
+        user_utt = julius.julius()
+        self.__say('なるほど、{}ですね。'.format(user_utt))
 
     def __say(self, serif):
         self.__forget_last_serif()
