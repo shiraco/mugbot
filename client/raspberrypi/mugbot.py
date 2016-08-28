@@ -35,15 +35,23 @@ class Mugbot(object):
         elif message[0:1]=="@":
             action = message[1:]
             if action.isalnum():
-                self.exp.brighten_eyes(action)
+                self.exp.act_something(action)
 
         else:
             self.__say(message)
 
+    def __act_something(self, action):
+        self.exp.act_something(action)
+
     def __listen(self):
         self.__say('どうしました？')
+        self.__act_something('w')
         user_utt = julius.julius()
-        self.__say('なるほど、{}ですね。'.format(user_utt))
+        if not user_utt:
+            self.__say('なるほど、{}ですね。'.format(user_utt))
+        else:
+            self.__say('ごめんなさい。聞き取れませんでした。')
+
 
     def __say(self, serif):
         self.__forget_last_serif()
