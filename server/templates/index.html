@@ -47,7 +47,8 @@ $(function(){
    $("#t9").val(str)
 
 ////////////////////WebSocket接続///////////////////////////
-   ws = new WebSocket("ws://" + location.host + "/ws");
+   scheme = "wss"
+   ws = new WebSocket(scheme + "://" + location.host + "/ws");
     ws.onmessage = function(evt) {
         $("#msg").append("<p>"+evt.data+"</p>");
    };
