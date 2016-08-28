@@ -4,6 +4,10 @@ import _thread as thread
 from mugbot import get_mugbot
 
 
+retry_attempts = 0
+max_retry_attempts = 120
+
+
 def on_message(ws, message):
     print("rsv: {}".format(message))
 
@@ -16,6 +20,7 @@ def on_error(ws, error):
 
 def on_close(ws):
     print("### closed ###")
+    retry_connect(ws)
 
 def on_open(ws):
     print("### open ###")
@@ -27,6 +32,17 @@ def on_open(ws):
         # print("thread terminating...")
 
     thread.start_new_thread(run, ())
+
+def retry_connect(ws):
+    if retry_attempts < max_retry_attempts:
+        retry_attempts += 1
+        ws = None
+
+        on_open(ws)
+        print("retry_attempts: {}".format(retry_attempts))
+
+    else:
+        print("websocket closed by over max_retry_attempts: {}".format(retry_attempts))
 
 
 if __name__ == "__main__":

@@ -13,7 +13,7 @@
    var scheme = "wss";
    var url = scheme + '://' + location.host + '/ws';
 
-   ws = new WebSocket(scheme + "://" + location.host + "/ws");
+   var ws = new WebSocket(scheme + "://" + location.host + "/ws");
 
    var wsStart = function() {
 
@@ -31,8 +31,6 @@
        // onmessage
        socket.onmessage = function(event) {
          console.log('onmessage');
-
-         var json = JSON.parse(event.data);
 
          // reset the tries back to 0 since we have a new connection opened.
          retry_attempts = 0;
