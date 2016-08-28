@@ -6,30 +6,28 @@
      wsStart();
    });
 
-   var socket = null;
+   var ws = null;
    var retry_attempts = 0;
    var max_retry_attempts = 120;
 
    var scheme = "wss";
    var url = scheme + '://' + location.host + '/ws';
 
-   var ws = new WebSocket(scheme + "://" + location.host + "/ws");
-
    var wsStart = function() {
 
-     if (socket === null) {
+     if (ws === null) {
 
-       socket = new WebSocket(url);
+       ws = new WebSocket(url);
        console.log(url);
 
        // onopen
-       socket.onopen = function() {
+       ws.onopen = function() {
          console.log('onopen');
 
        };
 
        // onmessage
-       socket.onmessage = function(event) {
+       ws.onmessage = function(event) {
          console.log('onmessage');
 
          // reset the tries back to 0 since we have a new connection opened.
@@ -39,13 +37,13 @@
 
        // onclose
        // When tablet page closed.
-       socket.onclose = function(event) {
+       ws.onclose = function(event) {
          console.log('onclose. reason: %s', event.reason);
 
          if (retry_attempts < max_retry_attempts) {
            // Connection has closed so try to reconnect.
            retry_attempts++;
-           socket = null;
+           ws = null;
 
            // retry
            wsStart();
@@ -60,7 +58,7 @@
 
        // onerror
        // When error occurred.
-       socket.onerror = function(event) {
+       ws.onerror = function(event) {
          console.log('onerror');
 
        };
