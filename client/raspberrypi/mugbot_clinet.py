@@ -31,8 +31,9 @@ def on_open(ws):
 
 if __name__ == "__main__":
     websocket.enableTrace(True)
-    host = "192.168.11.5"
-    ws = websocket.WebSocketApp("ws://" + host + ":8080/ws",
+    # host, port = "192.168.11.5", 8080
+    host, port = "https://mugbot.herokuapp.com/", 443
+    ws = websocket.WebSocketApp("ws://" + host + ":" + port + "/ws",
                                 on_message = on_message,
                                 on_error = on_error,
                                 on_close = on_close)

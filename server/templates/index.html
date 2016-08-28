@@ -47,12 +47,10 @@ $(function(){
    $("#t9").val(str)
 
 ////////////////////WebSocket接続///////////////////////////
-   ws = new WebSocket("ws://localhost:8080/ws");
+   ws = new WebSocket("ws://" + location.host + "/ws");
     ws.onmessage = function(evt) {
         $("#msg").append("<p>"+evt.data+"</p>");
    };
-// 192.168.42.1はRaspberry PiのIPアドレスを記入
-
 
    $("#listen").click(function(e){
              ws.send("@a")
