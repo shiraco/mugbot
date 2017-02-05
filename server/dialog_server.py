@@ -144,7 +144,6 @@ def handle_message(event):
     user_utt = event.message.text
     robot_utt = user_utt + "だってさ！"
 
-    from dialog_server import SocketHandler
     SocketHandler.send_message(robot_utt)
     logger.debug('say: {}'.format(robot_utt))
 
