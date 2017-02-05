@@ -1,4 +1,7 @@
 .pyc
+__pycache__
 
 .envrc
 .direnv/
+.env
+.venv
