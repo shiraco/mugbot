@@ -37,7 +37,7 @@ class Line(object):
         return self
 
 
-class LinePushNotifyHandler(object):
+class LinePushNotifyHandler(tornado.web.RequestHandler):
 
     @tornado.web.asynchronous
     def get(self, *args):
@@ -56,9 +56,9 @@ class LinePushNotifyHandler(object):
         self.write(json.dumps('OK'))
 
 
-class LineWebhookHandler(object):
+class LineWebhookHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
-    def get(self, *args):
+    def post(self, *args):
 
         signature = self.request.headers.get('X-Line-Signature')
         body = self.request.body
