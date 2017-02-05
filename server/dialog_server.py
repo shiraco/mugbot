@@ -28,6 +28,7 @@ class IndexHandler(tornado.web.RequestHandler):
 class SocketHandler(tornado.websocket.WebSocketHandler):
 
     clients = []
+    ws_messages = []
 
     def check_origin(self, origin):
         return True
@@ -39,13 +40,22 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
 
     def on_message(self, message):
         logger.debug('message {}'.format(message))
-        for client in self.clients:
-            client.write_message(message)
+        # for client in self.clients:
+        #     client.write_message(message)
+        SocketHandler.send_message(message)
 
     def on_close(self):
         logger.debug('close')
         if self in self.clients:
             self.clients.remove(self)
+
+    @classmethod
+    def send_message(cls, message):
+
+        cls.ws_messages.append(message)
+
+        for robot in cls.clients:
+            robot.write_message(message)
 
 
 class Application(tornado.web.Application):

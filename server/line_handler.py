@@ -85,7 +85,10 @@ def handle_message(event):
     logger.debug('event: {}'.format(event))
 
     user_utt = event.message.text
-    sys_utt = user_utt
+
+    from dialog_server import SocketHandler
+    SocketHandler.send_message(user_utt + "だってさ！")
+    sys_utt = "伝えといたよー"
 
     line_bot_api.reply_message(
         event.reply_token,
