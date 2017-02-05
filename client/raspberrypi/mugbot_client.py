@@ -2,7 +2,6 @@ import websocket
 import time
 import _thread as thread
 from mugbot import get_mugbot
-import sys
 
 
 def on_message(ws, message):
@@ -11,20 +10,25 @@ def on_message(ws, message):
     mugbot = get_mugbot
     mugbot.hear(message)
 
+
 def on_error(ws, error):
     print("### error ###")
     print(error)
+
 
 def on_close(ws):
     print("### closed ###")
     retry_connect(ws)
 
+
 def on_open(ws):
     print("### open ###")
+
     def run(*args):
         time.sleep(1)
 
     thread.start_new_thread(run, ())
+
 
 def retry_connect(ws):
     ws_start()
@@ -38,9 +42,9 @@ def ws_start():
     url = scheme + "://" + host + "/ws"
 
     ws = websocket.WebSocketApp(url,
-                           on_message = on_message,
-                           on_error = on_error,
-                           on_close = on_close)
+                                on_message=on_message,
+                                on_error=on_error,
+                                on_close=on_close)
     ws.on_open = on_open
     ws.run_forever()
     return ws

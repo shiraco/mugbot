@@ -14,25 +14,25 @@ class Mugbot(object):
         self.__say("おはよう")
 
     def hear(self, message):
-        if message[0:2]=="@x":
+        if message[0:2] == "@x":
             angle = message[2:]
             if angle.isdigit():
                 self.exp.nod_head(angle)
 
-        elif message[0:2]=="@y":
+        elif message[0:2] == "@y":
             angle = message[2:]
             if angle.isdigit():
                 self.exp.shake_head(angle)
 
-        elif message[0:2]=="@z":
+        elif message[0:2] == "@z":
             brightness = message[2:]
             if brightness.isdigit():
                 self.exp.brighten_eyes(brightness)
 
-        elif message[0:2]=="@a":
+        elif message[0:2] == "@a":
             self.__listen()
 
-        elif message[0:1]=="@":
+        elif message[0:1] == "@":
             action = message[1:]
             if action.isalnum():
                 self.exp.act_something(action)
@@ -52,7 +52,6 @@ class Mugbot(object):
         else:
             self.__say('ごめんなさい。聞き取れませんでした。')
 
-
     def __say(self, serif):
         self.__forget_last_serif()
 
@@ -66,8 +65,9 @@ class Mugbot(object):
             self.__last_serif_time = datetime.now()
 
     def __forget_last_serif(self):
-        if not self.__last_serif_time is None:
-            past_seconds = (datetime.now() - self.__last_serif_time).total_seconds()
+        if self.__last_serif_time is not None:
+            past_seconds = (datetime.now() -
+                            self.__last_serif_time).total_seconds()
             if past_seconds > 2:
                 self.__last_serif = None
                 self.__last_serif_time = None

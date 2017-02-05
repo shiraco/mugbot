@@ -3,7 +3,6 @@ import tornado.web
 import tornado.websocket
 import tornado.options
 import tornado.httpserver
-import subprocess
 import os
 
 
@@ -12,6 +11,7 @@ class IndexHandler(tornado.websocket.WebSocketHandler):
     @tornado.web.asynchronous
     def get(self, *args):
         self.render("index.html")
+
 
 class SocketHandler(tornado.websocket.WebSocketHandler):
 
@@ -34,6 +34,7 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
         print('close')
         if self in self.clients:
             self.clients.remove(self)
+
 
 class Application(tornado.web.Application):
 
@@ -59,5 +60,5 @@ def main():
     tornado.ioloop.IOLoop.current().start()
 
 
-if __name__ =="__main__":
+if __name__ == "__main__":
     main()
