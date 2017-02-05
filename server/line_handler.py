@@ -37,7 +37,7 @@ class Line(object):
         return self
 
 
-class PushResource(object):
+class LinePushNotifyHandler(object):
 
     @tornado.web.asynchronous
     def get(self, *args):
@@ -56,7 +56,7 @@ class PushResource(object):
         self.write(json.dumps('OK'))
 
 
-class WebhookResource(object):
+class LineWebhookHandler(object):
     @tornado.web.asynchronous
     def get(self, *args):
 
