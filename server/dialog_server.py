@@ -4,11 +4,28 @@ import tornado.websocket
 import tornado.options
 import tornado.httpserver
 import os
+import json
+
 from logging import DEBUG, StreamHandler, getLogger
 
-from line_handler import (
-    LineWebhookHandler, LinePushNotifyHandler
+from linebot import (
+    LineBotApi, WebhookHandler
 )
+from linebot.exceptions import (
+    InvalidSignatureError, LineBotApiError
+)
+from linebot.models import (
+    MessageEvent, TextMessage, TextSendMessage,
+)
+
+
+LINE_CHANNEL_SECRET = os.environ.get('LINE_CHANNEL_SECRET', '')
+LINE_CHANNEL_ACCESS_TOKEN = os.environ.get('LINE_CHANNEL_ACCESS_TOKEN', '')
+LINE_DEFAULT_TO_USER = os.environ.get('LINE_DEFAULT_TO_USER', '')
+
+line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
+line_handler = WebhookHandler(LINE_CHANNEL_SECRET)
+
 
 # logger
 logger = getLogger(__name__)
@@ -58,6 +75,48 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
             client.write_message(message)
 
 
+class LinePushNotifyHandler(tornado.web.RequestHandler):
+
+    def get(self, *args):
+
+        to = self.get_argument('to', default=LINE_DEFAULT_TO_USER)
+        text = self.get_argument('text', default='Hello World!')
+
+        logger.debug('to user: {}'.format(to))
+
+        try:
+            line_bot_api.push_message(to, TextSendMessage(text=text))
+
+        except LineBotApiError:
+            raise tornado.web.HTTPError(500, 'LINE bot api error')
+
+        self.write(json.dumps('OK'))
+
+
+class LineWebhookHandler(tornado.web.RequestHandler):
+
+    def post(self, *args):
+
+        signature = self.request.headers.get('X-Line-Signature')
+        body = self.request.body
+
+        if not body:
+            raise tornado.web.HTTPError(400, 'Empty request body',
+                                        'A valid JSON document is required.')
+
+        body = body.decode('utf-8')
+        logger.debug('receive_params: {}'.format(json.loads(body)))
+
+        # handle webhook body
+        try:
+            line_handler.handle(body, signature)
+
+        except InvalidSignatureError:
+            raise tornado.web.HTTPError(400, 'Invalid signature error.')
+
+        self.write(json.dumps('OK'))
+
+
 class Application(tornado.web.Application):
 
     def __init__(self):
@@ -75,6 +134,25 @@ class Application(tornado.web.Application):
         )
 
         tornado.web.Application.__init__(self, handlers, **settings)
+
+
+@line_handler.add(MessageEvent, message=TextMessage)
+def handle_message(event):
+
+    logger.debug('event: {}'.format(event))
+
+    user_utt = event.message.text
+    robot_utt = user_utt + "だってさ！"
+
+    from dialog_server import SocketHandler
+    SocketHandler.send_message(robot_utt)
+    logger.debug('say: {}'.format(robot_utt))
+
+    sys_utt = "伝えといたよー"
+
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text=sys_utt))
 
 
 def main():
