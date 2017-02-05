@@ -1,0 +1,24 @@
+{
+    "name": "Mugbot",
+    "description": "Mugbot",
+    "website": "https://github.com/shiraco/mugbot",
+    "repository": "https://github.com/shiraco/mugbot",
+    "keywords": [
+        "python"
+    ],
+    "success_url": "/",
+    "env": {
+        "LINE_CHANNEL_ACCESS_TOKEN": {
+            "description": "LINE Channel Access Token",
+            "required": true
+        },
+        "LINE_CHANNEL_SECRET": {
+            "description": "LINE Channel secret",
+            "required": true
+        },
+        "LINE_DEFAULT_TO_USER": {
+            "description": "LINE default to user",
+            "required": true
+        }
+    }
+}
